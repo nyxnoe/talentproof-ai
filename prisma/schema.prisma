@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  name      String?
+  role      Role     @default(CANDIDATE)
+  cases     Case[]
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  CANDIDATE
+  RECRUITER
+  ADMIN
+}
+
+model Case {
+  id                 String    @id @default(cuid())
+  title              String
+  userId             String
+  mode               CaseMode
+  jdText             String?
+  companyPreferences String?
+  status             CaseStatus @default(PENDING)
+  finalScore         Float?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  user    User     @relation(fields: [userId], references: [id])
+  uploads Upload[]
+  report  Report?
+}
+
+enum CaseMode {
+  RECRUITER
+  CANDIDATE
+}
+
+enum CaseStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Upload {
+  id               String        @id @default(cuid())
+  caseId           String
+  fileName         String
+  fileType         FileType
+  storageUrl       String
+  extractedText    String?
+  processingStatus UploadStatus  @default(PENDING)
+  createdAt        DateTime      @default(now())
+
+  case Case @relation(fields: [caseId], references: [id], onDelete: Cascade)
+}
+
+enum FileType {
+  RESUME
+  COVER_LETTER
+  CERTIFICATE
+  MARKSHEET
+  DEGREE
+  INTERNSHIP
+  EXPERIENCE_LETTER
+  ID_PROOF
+  JOB_DESCRIPTION
+  OTHER
+}
+
+enum UploadStatus {
+  PENDING
+  PARSED
+  ANALYZED
+  ERROR
+}
+
+model Report {
+  id             String   @id @default(cuid())
+  caseId         String   @unique
+  summary        String
+  strengths      String[]
+  weaknesses     String[]
+  missingItems   String[]
+  riskFlags      String[]
+  recommendation String
+  score          Float
+  scoreBreakdown Json
+  verifications  Json
+  createdAt      DateTime @default(now())
+
+  case Case @relation(fields: [caseId], references: [id], onDelete: Cascade)
+}
