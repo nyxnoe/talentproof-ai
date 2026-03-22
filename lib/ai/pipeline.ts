@@ -37,12 +37,14 @@ export async function runEvaluationPipeline(input: PipelineInput): Promise<Pipel
   // ── Step 2: Extract candidate profile ──
   console.log("[Pipeline] Step 2: Extracting candidate profile...");
   const profile = await extractCandidateProfile(allText);
+  await new Promise(r => setTimeout(r, 2000));
 
   // ── Step 3: Parse JD (if provided) ──
   console.log("[Pipeline] Step 3: Parsing job description...");
   const jobDescription = input.jdText
     ? await parseJobDescription(input.jdText)
     : { title: "General Role", requiredSkills: [], preferredSkills: [], requiredExperience: "", requiredEducation: "", requiredCertifications: [], responsibilities: [] };
+    await new Promise(r => setTimeout(r, 2000));
 
   // ── Step 4: Full analysis ──
   console.log("[Pipeline] Step 4: Running full candidate analysis...");

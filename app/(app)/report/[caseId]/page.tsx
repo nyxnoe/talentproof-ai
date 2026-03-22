@@ -4,13 +4,15 @@ import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import { getScoreLabel } from "@/lib/scoring/score";
 import Link from "next/link";
-import { ArrowLeft, Download, ShieldCheck, AlertTriangle, CheckCircle2, Clock, XCircle, HelpCircle } from "lucide-react";
+import { ArrowLeft, ShieldCheck, AlertTriangle, CheckCircle2, Clock, XCircle, HelpCircle } from "lucide-react";
+import PrintButton from "@/components/report/PrintButton";
 
-export default async function ReportPage({ params }: { params: { caseId: string } }) {
+export default async function ReportPage({ params }: { params: Promise<{ caseId: string }> }) {
   const { userId } = await auth();
+  const { caseId } = await params;
 
   const report = await db.report.findFirst({
-    where: { case: { id: params.caseId, user: { clerkId: userId! } } },
+    where: { case: { id: caseId, user: { clerkId: userId! } } },
     include: { case: { select: { title: true, mode: true, jdText: true } } },
   });
 
@@ -24,14 +26,17 @@ export default async function ReportPage({ params }: { params: { caseId: string 
 
   return (
     <div className="p-8 max-w-4xl fade-up">
-      {/* Back */}
-      <Link
-        href="/dashboard"
-        className="inline-flex items-center gap-1.5 text-sm mb-6 transition-colors hover:opacity-70"
-        style={{ color: "var(--muted)" }}
-      >
-        <ArrowLeft size={14} /> Back to Dashboard
-      </Link>
+      {/* Top bar */}
+      <div className="flex items-center justify-between mb-6">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-1.5 text-sm transition-colors hover:opacity-70"
+          style={{ color: "var(--muted)" }}
+        >
+          <ArrowLeft size={14} /> Back to Dashboard
+        </Link>
+        <PrintButton caseId={caseId} />
+      </div>
 
       {/* Header card */}
       <div

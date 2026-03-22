@@ -1,6 +1,5 @@
-"use client";
 // components/dashboard/StatsCard.tsx
-import { LucideIcon } from "lucide-react";
+import { FileCheck, TrendingUp, Clock, AlertTriangle, LucideIcon, CheckCircle2, FileStack, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const colorMap: Record<string, { bg: string; icon: string }> = {
@@ -12,15 +11,27 @@ const colorMap: Record<string, { bg: string; icon: string }> = {
 };
 
 interface Props {
-  icon: LucideIcon;
+  icon: string;
   label: string;
   value: string | number;
   color?: string;
   delay?: number;
 }
 
-export default function StatsCard({ icon: Icon, label, value, color = "accent", delay = 0 }: Props) {
+const iconMap: Record<string, LucideIcon> = {
+  FileCheck,
+  TrendingUp,
+  Clock,
+  AlertTriangle,
+  Users,
+  FileStack,
+  CheckCircle2,
+};
+
+export default function StatsCard({ icon, label, value, color = "accent", delay = 0 }: Props) {
   const c = colorMap[color] ?? colorMap.accent;
+  const Icon = iconMap[icon];
+
   return (
     <div
       className={cn("rounded-xl p-5 border fade-up", `fade-up-delay-${delay}`)}
@@ -30,7 +41,7 @@ export default function StatsCard({ icon: Icon, label, value, color = "accent", 
         className="w-9 h-9 rounded-lg flex items-center justify-center mb-3"
         style={{ background: c.bg }}
       >
-        <Icon size={16} style={{ color: c.icon }} />
+        {Icon && <Icon size={16} style={{ color: c.icon }} />}
       </div>
       <div className="text-2xl font-bold mb-0.5" style={{ fontFamily: "var(--font-display)" }}>
         {value}

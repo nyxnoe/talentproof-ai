@@ -56,10 +56,10 @@ export default async function DashboardPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-4 mb-8">
-        <StatsCard icon={FileCheck}      label="Total Cases"   value={cases.length} color="accent" delay={1} />
-        <StatsCard icon={TrendingUp}     label="Completed"     value={completed}     color="green"  delay={2} />
-        <StatsCard icon={Clock}          label="Processing"    value={processing}    color="amber"  delay={3} />
-        <StatsCard icon={AlertTriangle}  label="Avg Score"     value={avgScore ? `${avgScore}%` : "—"} color="blue" delay={4} />
+        <StatsCard icon="FileCheck"     label="Total Cases"  value={cases.length} color="accent" delay={1} />
+        <StatsCard icon="TrendingUp"    label="Completed"    value={completed}    color="green"  delay={2} />
+        <StatsCard icon="Clock"         label="Processing"   value={processing}   color="amber"  delay={3} />
+        <StatsCard icon="AlertTriangle" label="Avg Score"    value={avgScore ? `${avgScore}%` : "—"} color="blue" delay={4} />
       </div>
 
       {/* Recent Cases */}
