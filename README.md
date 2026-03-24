@@ -145,5 +145,3 @@ talentproof-ai/
 - Auth: [Clerk](https://clerk.com) free tier (50k users/month)
 - AI: [Google AI Studio](https://aistudio.google.com) free Gemini API
 
-**Alternative:**
-- App: [Railway](https://railway.app) ($5 trial credit)
