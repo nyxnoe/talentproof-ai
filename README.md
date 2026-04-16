@@ -1,56 +1,26 @@
-# TalentProof AI
+# TalentProof AI – Complete Local Version
 
-**AI-Powered Candidate Background Evaluation & Hiring Readiness Platform**
+**AI-Powered Candidate Verification Platform (100% local – Ollama + Tesseract)**
 
----
+## Quick Start (VPS / Local)
 
-## Quick Start
-
-### 1. Create the project
 ```bash
-npx create-next-app@latest talentproof-ai --typescript --tailwind --app
-cd talentproof-ai
-```
+# 1. System packages
+sudo apt-get install -y poppler-utils tesseract-ocr tesseract-ocr-eng ollama
 
-### 2. Install dependencies
-```bash
-# Core
-npm install @prisma/client prisma
-npm install @clerk/nextjs
-npm install @supabase/supabase-js
+# 2. Start Ollama
+ollama serve & sleep 3
+ollama pull llama3.1:8b
 
-# Document parsing
-npm install pdf-parse mammoth
-npm install @types/pdf-parse --save-dev
+# 3. Project
+npm install
+npm install tesseract.js sharp
 
-# Forms & validation
-npm install zod react-hook-form @hookform/resolvers
-
-# UI
-npm install lucide-react react-dropzone
-npx shadcn@latest init
-npx shadcn@latest add button card badge progress table tabs
-
-# PDF export (for reports)
-npm install @react-pdf/renderer
-```
-
-### 3. Set up environment
-```bash
-cp .env.example .env.local
-# Fill in your keys:
-# - DATABASE_URL from Supabase > Settings > Database
-# - Clerk keys from Clerk dashboard
-# - Supabase URL & keys from Supabase dashboard
-# - GEMINI_API_KEY from Google AI Studio (free)
-```
-
-### 4. Set up database
-```bash
+# 4. Database
 npx prisma generate
 npx prisma db push
-```
 
+<<<<<<< HEAD
 ### 5. Create Supabase storage bucket
 - Go to Supabase dashboard → Storage
 - Create a bucket named: `talentproof-uploads`
@@ -145,3 +115,12 @@ talentproof-ai/
 - Auth: [Clerk](https://clerk.com) free tier (50k users/month)
 - AI: [Google AI Studio](https://aistudio.google.com) free Gemini API
 
+=======
+# 5. Environment
+cp .env.example .env.local
+# Edit .env.local and add:
+# DATABASE_URL=...
+# OLLAMA_BASE_URL=http://localhost:11434
+# OLLAMA_MODEL=llama3.1:8b
+# UPLOAD_DIR=/var/talentproof/uploads
+>>>>>>> ff30164 (new update)

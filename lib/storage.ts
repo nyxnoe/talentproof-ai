@@ -1,32 +1,25 @@
-// lib/storage.ts
-import { createClient } from "@supabase/supabase-js";
+import path from "path";
+import fs from "fs/promises";
+import { randomUUID } from "crypto";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+const UPLOAD_DIR = process.env.UPLOAD_DIR ?? "/var/talentproof/uploads";
 
-const BUCKET = "talentproof-uploads";
-
-export async function uploadFileToStorage(
-  file: Buffer,
-  fileName: string,
-  mimeType: string
-): Promise<string> {
-  const path = `${Date.now()}-${fileName}`;
-
-  const { error } = await supabase.storage
-    .from(BUCKET)
-    .upload(path, file, { contentType: mimeType });
-
-  if (error) throw new Error(`Storage upload failed: ${error.message}`);
-
-  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
-  return data.publicUrl;
+export async function uploadFileLocally(buffer: Buffer, originalName: string) {
+  await fs.mkdir(UPLOAD_DIR, { recursive: true });
+  const ext = path.extname(originalName);
+  const fileName = `${Date.now()}-${randomUUID()}${ext}`;
+  const filePath = path.join(UPLOAD_DIR, fileName);
+  await fs.writeFile(filePath, buffer);
+  return {
+    storagePath: filePath,
+    storageUrl: `/api/files/${fileName}`,
+  };
 }
 
-export async function deleteFileFromStorage(url: string): Promise<void> {
-  const path = url.split(`/${BUCKET}/`)[1];
-  if (!path) return;
-  await supabase.storage.from(BUCKET).remove([path]);
+export async function readFileFromStorage(storagePath: string): Promise<Buffer> {
+  return fs.readFile(storagePath);
+}
+
+export async function deleteFileFromStorage(storagePath: string) {
+  await fs.unlink(storagePath).catch(() => {});
 }

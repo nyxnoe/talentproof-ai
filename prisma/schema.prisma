@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -41,50 +40,30 @@ model Case {
   report  Report?
 }
 
-enum CaseMode {
-  RECRUITER
-  CANDIDATE
-}
-
-enum CaseStatus {
-  PENDING
-  PROCESSING
-  COMPLETED
-  FAILED
-}
+enum CaseMode { RECRUITER CANDIDATE }
+enum CaseStatus { PENDING PROCESSING COMPLETED FAILED }
 
 model Upload {
-  id               String        @id @default(cuid())
-  caseId           String
-  fileName         String
-  fileType         FileType
-  storageUrl       String
-  extractedText    String?
-  processingStatus UploadStatus  @default(PENDING)
-  createdAt        DateTime      @default(now())
+  id                String        @id @default(cuid())
+  caseId            String
+  fileName          String
+  fileType          FileType
+  storagePath       String?                  // ← NEW: local disk path
+  storageUrl        String
+  extractedText     String?
+  structuredFields  Json?                    // ← NEW: zone extraction results
+  processingStatus  UploadStatus  @default(PENDING)
+  createdAt         DateTime      @default(now())
 
   case Case @relation(fields: [caseId], references: [id], onDelete: Cascade)
 }
 
 enum FileType {
-  RESUME
-  COVER_LETTER
-  CERTIFICATE
-  MARKSHEET
-  DEGREE
-  INTERNSHIP
-  EXPERIENCE_LETTER
-  ID_PROOF
-  JOB_DESCRIPTION
-  OTHER
+  RESUME COVER_LETTER CERTIFICATE MARKSHEET DEGREE INTERNSHIP EXPERIENCE_LETTER
+  ID_PROOF JOB_DESCRIPTION OTHER
 }
 
-enum UploadStatus {
-  PENDING
-  PARSED
-  ANALYZED
-  ERROR
-}
+enum UploadStatus { PENDING PARSED ANALYZED ERROR }
 
 model Report {
   id             String   @id @default(cuid())
@@ -101,4 +80,34 @@ model Report {
   createdAt      DateTime @default(now())
 
   case Case @relation(fields: [caseId], references: [id], onDelete: Cascade)
+}
+
+// ── NEW: Template System ──
+model DocumentTemplate {
+  id              String   @id @default(cuid())
+  name            String
+  documentType    FileType
+  version         Int      @default(1)
+  fields          Json     // FieldZone[]
+  anchorStrategy  String   @default("relative_position_plus_anchor_text")
+  active          Boolean  @default(true)
+  sampleFileUrl   String?
+  createdBy       String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  corrections     TemplateCorrection[]
+}
+
+model TemplateCorrection {
+  id              String   @id @default(cuid())
+  templateId      String
+  fieldId         String
+  originalValue   String
+  correctedValue  String
+  docSnippet      String?
+  appliedBy       String
+  appliedAt       DateTime @default(now())
+
+  template        DocumentTemplate @relation(fields: [templateId], references: [id])
 }
