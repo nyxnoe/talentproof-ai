@@ -61,6 +61,17 @@ export default function CaseWorkspacePage() {
       form.append("fileType", pendingFileType);
 
       const res = await fetch("/api/upload", { method: "POST", body: form });
+      // ADD: check before parsing
+      if (!res.ok) {
+        const errText = await res.text().catch(() => "Unknown error");
+        console.error("Upload error:", res.status, errText);
+        setInsights((prev) => [
+          { type: "warn", text: `Upload failed (${res.status}). Check console.` },
+          ...prev,
+        ]);
+        setUploading(false);
+        return;
+      }
       const data = await res.json();
 
       if (data.upload) {

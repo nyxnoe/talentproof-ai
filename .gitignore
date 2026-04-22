@@ -28,3 +28,10 @@ yarn-error.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+
+# Old junk
+app/trek/
+common/
+repomix-output-*.md
+
