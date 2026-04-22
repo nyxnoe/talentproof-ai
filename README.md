@@ -10,7 +10,7 @@ sudo apt-get install -y poppler-utils tesseract-ocr tesseract-ocr-eng ollama
 
 # 2. Start Ollama
 ollama serve & sleep 3
-ollama pull llama3.1:8b
+ollama pull llama3.2
 
 # 3. Project
 npm install
@@ -121,6 +121,6 @@ cp .env.example .env.local
 # Edit .env.local and add:
 # DATABASE_URL=...
 # OLLAMA_BASE_URL=http://localhost:11434
-# OLLAMA_MODEL=llama3.1:8b
+# OLLAMA_MODEL=llama3.2
 # UPLOAD_DIR=/var/talentproof/uploads
 >>>>>>> ff30164 (new update)

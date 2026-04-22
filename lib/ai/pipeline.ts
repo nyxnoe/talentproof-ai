@@ -47,9 +47,19 @@ Return ONLY valid JSON — no markdown, no explanation:
 }`;
 
   const raw = await callOllama(prompt);
-  const cleaned = raw.replace(/```json|```/g, "").trim();
-  const analysis = JSON.parse(cleaned);
+  
+  // Find the first '{' and the last '}' to extract ONLY the JSON object
+  const startIndex = raw.indexOf('{');
+  const endIndex = raw.lastIndexOf('}');
+  
+  if (startIndex === -1 || endIndex === -1) {
+    console.error("LLM Output:", raw);
+    throw new Error("Ollama did not return a valid JSON object.");
+  }
+  
+  const jsonString = raw.substring(startIndex, endIndex + 1);
+  const analysis = JSON.parse(jsonString);
   const finalScore = calculateScore(analysis.scoreBreakdown);
-
+  
   return { analysis, finalScore };
 }

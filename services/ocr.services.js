@@ -94,7 +94,7 @@ ${text}`;
 
     try {
       const response = await ollama.chat({
-        model: process.env.OLLAMA_MODEL || 'llama3.1:8b',
+        model: process.env.OLLAMA_MODEL || 'llama3.2',
         messages: [{ role: 'user', content: prompt }],
         format: 'json'
       });
